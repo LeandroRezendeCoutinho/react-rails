@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+  app:
+    image: react-rails
+    container_name: react-rails
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - gems:/usr/local/bundle/gems
+      - node_modules:/app/node_modules
+      - db:/db
+    environment:
+      RAILS_ENV: development
+    command: >
+      sh -c 'bundle check || bundle install &&
+      yarn install --check-files &&
+      rm -f tmp/pids/server.pid &&
+      rails s -b 0.0.0.0'
+
+  webpack:
+    image: react-rails
+    container_name: react-rails-webpack
+    ports:
+      - "3035:3035"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - gems:/usr/local/bundle/gems
+    command: ./bin/webpack-dev-server
+volumes:
+  gems:
+  node_modules:
+  db:
